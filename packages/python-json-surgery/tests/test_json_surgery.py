@@ -1,7 +1,14 @@
 import os
+import sys
 import unittest
 import time
+from pathlib import Path
 from typing import cast
+
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
 
 from dotenv import load_dotenv
 from openai import OpenAI
