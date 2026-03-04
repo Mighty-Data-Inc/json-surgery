@@ -1,8 +1,8 @@
-# gpt-conversation
+# json-surgery
 
-Utilities for managing multi-shot LLM conversations and structured JSON responses with OpenAI's Responses API.
+Iterative, AI-guided JSON modification powered by OpenAI. Pass in any JSON-compatible object and natural-language instructions; the package breaks the task into discrete atomic operations (assign, delete, append, insert, rename) that are verified and applied one by one until the object satisfies your instructions.
 
-This repo contains shared, production-focused helpers from **Mighty Data Inc.** for building reliable LLM applications without rewriting the same plumbing in every project.
+This repo contains cross-language implementations from **Mighty Data Inc.** that can be dropped straight into real projects.
 
 ## Design goals
 
@@ -11,67 +11,79 @@ This repo contains shared, production-focused helpers from **Mighty Data Inc.** 
 * Cross-language parity (Python + TypeScript)
 * Easy to drop into real projects
 
-This is not a framework — just a clean, reusable toolkit for the parts of LLM integration that tend to get copy-pasted everywhere.
+Rather than asking an LLM to rewrite an entire JSON blob in one shot (which is error-prone for large or complex structures), `json_surgery` / `jsonSurgery` decomposes the task into small, verifiable steps, gives the model feedback after each one, and iterates until validation passes.
 
 ## Packages
 
-- TypeScript: `@mightydatainc/gpt-conversation` (npm) in `packages/typescript-gpt-conversation`
-- Python: `mightydatainc-gpt-conversation` (PyPI, import as `gpt_conversation`) in `packages/python-gpt-conversation`
+- TypeScript: `@mightydatainc/json-surgery` (npm) in `packages/typescript-json-surgery`
+- Python: `mightydatainc-json-surgery` (PyPI, import as `mightydatainc_json_surgery`) in `packages/python-json-surgery`
 
 Package-specific docs:
 
-- TypeScript: [packages/typescript-gpt-conversation/README.md](packages/typescript-gpt-conversation/README.md)
-- Python: [packages/python-gpt-conversation/README.md](packages/python-gpt-conversation/README.md)
+- TypeScript: [packages/typescript-json-surgery/README.md](packages/typescript-json-surgery/README.md)
+- Python: [packages/python-json-surgery/README.md](packages/python-json-surgery/README.md)
 
 ## Feature overview
 
 Core capabilities (Python + TypeScript):
 
-- Conversation and multi-message submission helpers (`GptConversation` / `gpt_submit`)
-- Structured JSON response support
-- JSON schema helpers for structured output (`JSONSchemaFormat`)
+- `json_surgery` / `jsonSurgery` — iteratively modifies a JSON object via LLM-guided atomic operations
+- `placemarked_json_stringify` / `placemarkedJSONStringify` — serializes JSON with inline path comments for model readability
+- `navigate_to_json_path` / `navigateToJSONPath` — traverses a JSON object by a path list
+- Validation callback (`on_validate_before_return` / `onValidateBeforeReturn`) for custom schema enforcement
+- Progress callback (`on_work_in_progress` / `onWorkInProgress`) for monitoring and mid-process intervention
+- Configurable time and iteration limits with `JSONSurgeryError` carrying the last known object state
 
 ## Quick start
 
 ### Python
 
 ```python
-from gpt_conversation import GptConversation
+from openai import OpenAI
+from mightydatainc_json_surgery import json_surgery
 
-conversation = GptConversation(openai_client=client)
-reply = conversation.submit_user_message('Say hello.')
-print(reply)
+client = OpenAI()
+
+result = json_surgery(
+    openai_client=client,
+    obj={"title": "Draft", "items": [{"id": 1, "status": "draft"}]},
+    modification_instructions='Set the status of every item to "published".',
+)
+print(result)
 ```
 
 ### TypeScript
 
 ```ts
 import OpenAI from 'openai';
-import { GptConversation } from '@mightydatainc/gpt-conversation';
+import { jsonSurgery } from '@mightydatainc/json-surgery';
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const conversation = new GptConversation([], { openaiClient: client });
-const reply = await conversation.submitUserMessage('Say hello.');
-console.log(reply);
+
+const result = await jsonSurgery(
+  client,
+  { title: 'Draft', items: [{ id: 1, status: 'draft' }] },
+  'Set the status of every item to "published".'
+);
+console.log(result);
 ```
 
 ## Local dev (Windows)
 
 ### Python
 
-From `packages/python-gpt-conversation`, activate the package venv and run tests:
+From `packages/python-json-surgery`, activate the package venv and run tests:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
-python -c "import sys; print(sys.executable)"
-python -m unittest discover -v -s tests
+python -m pytest tests/ -v
 ```
 
 Live integration tests (real API) require `OPENAI_API_KEY` in your environment.
 
 ### TypeScript
 
-From `packages/typescript-gpt-conversation`, install dependencies and run tests/build:
+From `packages/typescript-json-surgery`, install dependencies and run tests/build:
 
 ```powershell
 npm ci
@@ -97,14 +109,14 @@ Deterministic assertions are still intentional here: tests are written with tigh
 
 This repo ships two public packages with aligned versions:
 
-- npm: `@mightydatainc/gpt-conversation` from `packages/typescript-gpt-conversation`
-- PyPI: `mightydatainc-gpt-conversation` from `packages/python-gpt-conversation`
+- npm: `@mightydatainc/json-surgery` from `packages/typescript-json-surgery`
+- PyPI: `mightydatainc-json-surgery` from `packages/python-json-surgery`
 
 GitHub release automation publishes each package automatically on push to `main`
 when its package version changes:
 
-- TypeScript checks `packages/typescript-gpt-conversation/package.json`
-- Python checks `packages/python-gpt-conversation/pyproject.toml`
+- TypeScript checks `packages/typescript-json-surgery/package.json`
+- Python checks `packages/python-json-surgery/pyproject.toml`
 
 Before publishing, ensure both versions are updated (`package.json` and `pyproject.toml`), then authenticate once locally:
 
