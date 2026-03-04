@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   jsonSurgery,
   JSONSurgeryError,
-} from '../../src/jsonSurgery/jsonSurgery.js';
+} from '../src/jsonSurgery.js';
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY?.trim();
 if (!OPENAI_API_KEY) {

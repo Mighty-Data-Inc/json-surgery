@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   navigateToJSONPath,
   placemarkedJSONStringify,
-} from '../../src/jsonSurgery/placemarkedJSON.js';
+} from '../src/placemarkedJSON.js';
 
 describe('placemarkedJSONStringify', () => {
   describe('root annotation and path placemarks', () => {
