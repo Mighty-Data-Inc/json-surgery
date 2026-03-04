@@ -28,6 +28,23 @@ class PlacemarkedJSONStringifyTests(unittest.TestCase):
         self.assertIn('// root["items"][0]', output)
         self.assertIn('// root["metadata"]', output)
 
+    def test_annotates_deeply_nested_object_and_array_paths(self):
+        value = {
+            "groups": [
+                {
+                    "members": [{"profile": {"name": "A"}}],
+                }
+            ]
+        }
+
+        output = placemarked_json_stringify(value)
+
+        self.assertIn('// root["groups"]', output)
+        self.assertIn('// root["groups"][0]', output)
+        self.assertIn('// root["groups"][0]["members"]', output)
+        self.assertIn('// root["groups"][0]["members"][0]', output)
+        self.assertIn('// root["groups"][0]["members"][0]["profile"]', output)
+
     def test_serializes_primitive_values_and_null(self):
         value = {
             "text": "hello",
@@ -43,6 +60,17 @@ class PlacemarkedJSONStringifyTests(unittest.TestCase):
         self.assertIn('"isActive": true', output)
         self.assertIn('"empty": null', output)
 
+    def test_escapes_special_characters_in_strings(self):
+        value = {
+            "quoted": 'He said "hello"',
+            "multiline": "line1\nline2",
+        }
+
+        output = placemarked_json_stringify(value)
+
+        self.assertIn('"quoted": "He said \\"hello\\""', output)
+        self.assertIn('"multiline": "line1\\nline2"', output)
+
     def test_formats_arrays_with_per_index_comments(self):
         output = placemarked_json_stringify(["alpha", "beta"])
 
@@ -51,6 +79,19 @@ class PlacemarkedJSONStringifyTests(unittest.TestCase):
         self.assertIn("// root[1]", output)
         self.assertIn('"alpha",', output)
         self.assertIn('"beta"', output)
+
+    def test_omits_keys_listed_in_skipped_keys_while_keeping_other_fields(self):
+        value = {
+            "keep": {"enabled": True},
+            "skip": {"enabled": False},
+        }
+
+        output = placemarked_json_stringify(value, 2, ["skip"])
+
+        self.assertIn('"keep":', output)
+        self.assertIn('// root["keep"]', output)
+        self.assertNotIn('"skip":', output)
+        self.assertNotIn('// root["skip"]', output)
 
     def test_omits_skipped_keys_across_nested_levels(self):
         value = {
@@ -128,6 +169,14 @@ class PlacemarkedJSONStringifyTests(unittest.TestCase):
   }
 }""",
         )
+
+    def test_keeps_primitive_object_properties_on_a_single_line(self):
+        output = placemarked_json_stringify({"name": "Kaiizen", "index": 7})
+
+        self.assertIn('"name": "Kaiizen"', output)
+        self.assertIn('"index": 7', output)
+        self.assertNotIn('"name": \n', output)
+        self.assertNotIn('"index": \n', output)
 
 
 class NavigateToJSONPathTests(unittest.TestCase):
