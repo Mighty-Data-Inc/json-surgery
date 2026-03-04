@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 
-from mdi_llmkit.json_surgery import (
+from mightydatainc_json_surgery import (
     JSONSurgeryError,
     JSONSurgeryOptions,
     json_surgery,

@@ -8,7 +8,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from mdi_llmkit.json_surgery import (
+from mightydatainc_json_surgery import (
     navigate_to_json_path,
     placemarked_json_stringify,
 )
