@@ -2,6 +2,11 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.1.0] - 2026-03-09
+
+- Updated dependencies.
+- Updated README files.
+
 ## [1.0.4] - 2026-03-04
 
 - Added 4 missing unit tests to `test_placemarked_json.py` to achieve full parity with the TypeScript test suite (both packages now have 42 tests).

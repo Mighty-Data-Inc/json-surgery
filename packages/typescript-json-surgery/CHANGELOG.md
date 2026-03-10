@@ -2,6 +2,11 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.1.0] - 2026-03-09
+
+- Updated dependencies.
+- Updated README files.
+
 ## [1.0.4] - 2026-03-04
 
 - No changes. Version bump to maintain parity with the Python package.
