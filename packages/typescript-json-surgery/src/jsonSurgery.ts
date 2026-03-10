@@ -245,7 +245,7 @@ export const jsonSurgery = async (
 
   const timeStarted = Date.now();
 
-  const convoBase = new GptConversation([], { openaiClient });
+  const convoBase = new GptConversation(openaiClient);
   convoBase.addDeveloperMessage(`
 You are an expert software developer AI assistant.
 The user will show you a JSON object and provide modification instructions.
