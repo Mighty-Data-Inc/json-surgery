@@ -1,6 +1,6 @@
 # @mightydatainc/json-surgery
 
-Iterative, AI-guided JSON modification powered by OpenAI. Pass in any JSON-compatible object and natural-language instructions; the package breaks the task into discrete atomic operations (assign, delete, append, insert, rename) that are verified and applied one by one until the object satisfies your instructions.
+Iterative, AI-guided JSON modification powered by OpenAI. Pass in any JSON-compatible object and natural-language instructions. `jsonSurgery` breaks the task into discrete atomic operations (assign, delete, append, insert, rename, etc.) that are verified and applied methodically until the object satisfies your instructions.
 
 ## Installation
 
@@ -36,14 +36,14 @@ console.log(result);
 
 All options are optional.
 
-| Option | Type | Description |
-|---|---|---|
-| `schemaDescription` | `string` | Human-readable schema description passed to the model so it can stay within the expected structure. |
-| `skippedKeys` | `string[]` | Keys to omit from the placemarked JSON shown to the model (e.g. large blobs irrelevant to the task). |
-| `onValidateBeforeReturn` | `(obj) => Promise<{ objCorrected?: any; errors?: string[] } \| undefined>` | Called before the final object is returned. Return `errors` to force another round of corrections, or `objCorrected` to substitute a fixed version. |
-| `onWorkInProgress` | `(obj) => Promise<any \| undefined>` | Called at the start of each iteration after the first. Receives the current in-progress object; return a replacement to override it, or throw to abort. |
-| `giveUpAfterSeconds` | `number` | Throw `JSONSurgeryError` if the process exceeds this many seconds. |
-| `giveUpAfterIterations` | `number` | Throw `JSONSurgeryError` if the process exceeds this many iterations. |
+| Option                   | Type                                                                       | Description                                                                                                                                             |
+| ------------------------ | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `schemaDescription`      | `string`                                                                   | Human-readable schema description passed to the model so it can stay within the expected structure.                                                     |
+| `skippedKeys`            | `string[]`                                                                 | Keys to omit from the placemarked JSON shown to the model (e.g. large blobs irrelevant to the task).                                                    |
+| `onValidateBeforeReturn` | `(obj) => Promise<{ objCorrected?: any; errors?: string[] } \| undefined>` | Called before the final object is returned. Return `errors` to force another round of corrections, or `objCorrected` to substitute a fixed version.     |
+| `onWorkInProgress`       | `(obj) => Promise<any \| undefined>`                                       | Called at the start of each iteration after the first. Receives the current in-progress object; return a replacement to override it, or throw to abort. |
+| `giveUpAfterSeconds`     | `number`                                                                   | Throw `JSONSurgeryError` if the process exceeds this many seconds.                                                                                      |
+| `giveUpAfterIterations`  | `number`                                                                   | Throw `JSONSurgeryError` if the process exceeds this many iterations.                                                                                   |
 
 ```ts
 import OpenAI from 'openai';
@@ -117,22 +117,22 @@ Traverses a JSON-compatible object by a path array and returns the parent, key/i
 ```ts
 import { navigateToJSONPath } from '@mightydatainc/json-surgery';
 
-const result = navigateToJSONPath({ items: [{ name: 'Alice' }] }, ['items', 0, 'name']);
+const result = navigateToJSONPath({ items: [{ name: 'Alice' }] }, [
+  'items',
+  0,
+  'name',
+]);
 console.log(result.pathTarget); // "Alice"
 ```
 
-## Local dev
-
-From `packages/typescript-json-surgery`:
+## Installation and usage
 
 ```bash
-npm ci
-npm test
-npm run build
+npm install `@mightydatainc/json-surgery`
 ```
 
-## Notes
+```ts
+import { jsonSurgery } from '@mightydatainc/json-surgery';
+```
 
-- Package name for `npm install` is `@mightydatainc/json-surgery`.
-- `jsonSurgery` deep-copies the input object; the original is never mutated.
-- Requires `@mightydatainc/gpt-conversation >= 1.3.3`.
+Requires node >=24.0.

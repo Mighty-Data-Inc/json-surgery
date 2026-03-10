@@ -1,131 +1,47 @@
 # json-surgery
 
-Iterative, AI-guided JSON modification powered by OpenAI. Pass in any JSON-compatible object and natural-language instructions; the package breaks the task into discrete atomic operations (assign, delete, append, insert, rename) that are verified and applied one by one until the object satisfies your instructions.
+Reliable JSON transformation for AI-augmented software.
 
-This repo contains cross-language implementations from **Mighty Data Inc.** that can be dropped straight into real projects.
+`json-surgery` helps you apply natural-language changes to JSON safely and predictably. Instead of asking a model to rewrite an entire document in one shot, it breaks the work into small atomic operations, verifies each step, and iterates until the result matches your intent.
 
-## Design goals
+This is built for teams that want access to the power and flexibility of AI, without giving up control.
 
-* Minimal abstractions
-* Predictable behavior
-* Cross-language parity (Python + TypeScript)
-* Easy to drop into real projects
+## Why teams use it
 
-Rather than asking an LLM to rewrite an entire JSON blob in one shot (which is error-prone for large or complex structures), `json_surgery` / `jsonSurgery` decomposes the task into small, verifiable steps, gives the model feedback after each one, and iterates until validation passes.
+- Reduce breakage from one-shot JSON rewrites.
+- Keep large, nested, or irregular payloads stable during edits.
+- Add validation gates so business rules are enforced before output is accepted.
+- Keep visibility into in-progress transformations during long or complex edits.
+- Recover gracefully when limits are hit, with access to the last known state.
 
-## Packages
+## What problems it solves
 
-- TypeScript: `@mightydatainc/json-surgery` (npm) in `packages/typescript-json-surgery`
-- Python: `mightydatainc-json-surgery` (PyPI, import as `mightydatainc_json_surgery`) in `packages/python-json-surgery`
+- Normalizing external-source data from clients, vendors, partners, or user-uploaded payloads.
+- Cleaning and restructuring semi-structured JSON during ingestion.
+- Applying policy-driven changes across many nested records.
+- Powering agent workflows that need deterministic JSON changes, not approximate rewrites.
 
-Package-specific docs:
+## How it works
 
-- TypeScript: [packages/typescript-json-surgery/README.md](packages/typescript-json-surgery/README.md)
-- Python: [packages/python-json-surgery/README.md](packages/python-json-surgery/README.md)
+1. You provide a JSON object and plain-language modification instructions.
+2. `json-surgery` converts the request into discrete operations such as assign, delete, append, insert, and rename.
+3. Operations are validated and applied iteratively, with optional feedback loops between rounds.
+4. You receive a transformed object that reflects the requested changes with far higher reliability than direct full-document generation.
 
-## Feature overview
+## What makes it different
 
-Core capabilities (Python + TypeScript):
+- Edit-based, not rewrite-based: safer for complex objects.
+- Designed for production guardrails: validation, progress hooks, and bounded execution.
+- Practical for real-world messy data: especially external payload normalization.
+- Maintained as a cross-runtime project with aligned behavior.
 
-- `json_surgery` / `jsonSurgery` — iteratively modifies a JSON object via LLM-guided atomic operations
-- `placemarked_json_stringify` / `placemarkedJSONStringify` — serializes JSON with inline path comments for model readability
-- `navigate_to_json_path` / `navigateToJSONPath` — traverses a JSON object by a path list
-- Validation callback (`on_validate_before_return` / `onValidateBeforeReturn`) for custom schema enforcement
-- Progress callback (`on_work_in_progress` / `onWorkInProgress`) for monitoring and mid-process intervention
-- Configurable time and iteration limits with `JSONSurgeryError` carrying the last known object state
+## Who this is for
 
-## Quick start
+- AI product teams shipping structured-data features.
+- Platform and backend teams maintaining strict JSON contracts.
+- Data and automation teams standardizing incoming payloads before downstream processing.
 
-### Python
+## Explore Package Docs
 
-```python
-from openai import OpenAI
-from mightydatainc_json_surgery import json_surgery
-
-client = OpenAI()
-
-result = json_surgery(
-    openai_client=client,
-    obj={"title": "Draft", "items": [{"id": 1, "status": "draft"}]},
-    modification_instructions='Set the status of every item to "published".',
-)
-print(result)
-```
-
-### TypeScript
-
-```ts
-import OpenAI from 'openai';
-import { jsonSurgery } from '@mightydatainc/json-surgery';
-
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-const result = await jsonSurgery(
-  client,
-  { title: 'Draft', items: [{ id: 1, status: 'draft' }] },
-  'Set the status of every item to "published".'
-);
-console.log(result);
-```
-
-## Local dev (Windows)
-
-### Python
-
-From `packages/python-json-surgery`, activate the package venv and run tests:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-python -m pytest tests/ -v
-```
-
-Live integration tests (real API) require `OPENAI_API_KEY` in your environment.
-
-### TypeScript
-
-From `packages/typescript-json-surgery`, install dependencies and run tests/build:
-
-```powershell
-npm ci
-npm test
-npm run build
-```
-
-## Unit testing with live API calls
-
-Some tests intentionally call the real OpenAI API instead of mocking model responses.
-
-This is by design: the core contract includes prompt wording, output parsing, and model behavior working together. Mock-only tests cannot verify whether production prompts still elicit the required structured output.
-
-These tests do have tradeoffs:
-
-- They require `OPENAI_API_KEY` in the test environment.
-- They incur a small API cost when run.
-- They can be slower than pure unit tests.
-
-Deterministic assertions are still intentional here: tests are written with tightly scoped instructions and clearly defined JSON outcomes, so stable structured output is treated as a baseline requirement. If those tests fail, we treat it as a bug in prompt design, output handling, or integration behavior.
-
-## Release process
-
-This repo ships two public packages with aligned versions:
-
-- npm: `@mightydatainc/json-surgery` from `packages/typescript-json-surgery`
-- PyPI: `mightydatainc-json-surgery` from `packages/python-json-surgery`
-
-GitHub release automation publishes each package automatically on push to `main`
-when its package version changes:
-
-- TypeScript checks `packages/typescript-json-surgery/package.json`
-- Python checks `packages/python-json-surgery/pyproject.toml`
-
-Before publishing, ensure both versions are updated (`package.json` and `pyproject.toml`), then authenticate once locally:
-
-- npm: `npm login`
-- PyPI: configure `~/.pypirc` or use `python -m twine upload --repository pypi dist/*`
-
-After publish, tag and push a release tag (example):
-
-```powershell
-git tag v1.1.1
-git push origin v1.1.1
-```
+- [packages/python-json-surgery/README.md](packages/python-json-surgery/README.md)
+- [packages/typescript-json-surgery/README.md](packages/typescript-json-surgery/README.md)

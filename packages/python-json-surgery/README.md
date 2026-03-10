@@ -1,6 +1,6 @@
 # mightydatainc-json-surgery
 
-Iterative, AI-guided JSON modification powered by OpenAI. Pass in any JSON-compatible object and natural-language instructions; the package breaks the task into discrete atomic operations (assign, delete, append, insert, rename) that are verified and applied one by one until the object satisfies your instructions.
+Iterative, AI-guided JSON modification powered by OpenAI. Pass in any JSON-compatible object and natural-language instructions. `json_surgery` breaks the task into discrete atomic operations (assign, delete, append, insert, rename, etc.) that are verified and applied methodically until the object satisfies your instructions.
 
 ## Installation
 
@@ -36,14 +36,14 @@ print(result)
 
 All options are optional.
 
-| Option | Type | Description |
-|---|---|---|
-| `schema_description` | `str` | Human-readable schema description passed to the model so it can stay within the expected structure. |
-| `skipped_keys` | `list[str]` | Keys to omit from the placemarked JSON representation shown to the model (e.g. large blobs irrelevant to the task). |
+| Option                      | Type                                        | Description                                                                                                                                          |
+| --------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `schema_description`        | `str`                                       | Human-readable schema description passed to the model so it can stay within the expected structure.                                                  |
+| `skipped_keys`              | `list[str]`                                 | Keys to omit from the placemarked JSON representation shown to the model (e.g. large blobs irrelevant to the task).                                  |
 | `on_validate_before_return` | `Callable[[Any], ValidationResult \| None]` | Called before the final object is returned. Return `errors` to force another round of corrections, or `obj_corrected` to substitute a fixed version. |
-| `on_work_in_progress` | `Callable[[Any], Any \| None]` | Called at the start of each iteration (after the first). Receives the current in-progress object; return a replacement to override it. |
-| `give_up_after_seconds` | `int` | Raise `JSONSurgeryError` if the process exceeds this many seconds. |
-| `give_up_after_iterations` | `int` | Raise `JSONSurgeryError` if the process exceeds this many iterations. |
+| `on_work_in_progress`       | `Callable[[Any], Any \| None]`              | Called at the start of each iteration (after the first). Receives the current in-progress object; return a replacement to override it.               |
+| `give_up_after_seconds`     | `int`                                       | Raise `JSONSurgeryError` if the process exceeds this many seconds.                                                                                   |
+| `give_up_after_iterations`  | `int`                                       | Raise `JSONSurgeryError` if the process exceeds this many iterations.                                                                                |
 
 ```python
 from mightydatainc_json_surgery import json_surgery, JSONSurgeryOptions
@@ -118,19 +118,14 @@ result = navigate_to_json_path({"items": [{"name": "Alice"}]}, ["items", 0, "nam
 print(result["path_target"])  # "Alice"
 ```
 
-## Local dev (Windows)
+## Installation and usage
 
-From `packages/python-json-surgery`, activate the package venv and run tests:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-python -m pytest tests/ -v
+```bash
+pip install mightydatainc-json-surgery
 ```
 
-## Notes
+```python
+from mightydatainc_json_surgery import json_surgery
+```
 
-- Package name for `pip install` is `mightydatainc-json-surgery`.
-- Python import package is `mightydatainc_json_surgery`.
-- Requires Python 3.13+ and `mightydatainc-gpt-conversation>=1.3.2`.
-- `json_surgery` deep-copies the input object; the original is never mutated.
-
+Requires Python >=3.13.
