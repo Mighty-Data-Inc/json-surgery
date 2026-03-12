@@ -2,6 +2,10 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.2.0] - 2026-03-12
+
+- Migrated dependency from GPT conversation to LLM conversation.
+
 ## [1.1.0] - 2026-03-09
 
 - Updated dependencies.
