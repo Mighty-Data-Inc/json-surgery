@@ -23,12 +23,11 @@
  * - `onWorkInProgress` for per-iteration monitoring/intervention,
  * - `giveUpAfterSeconds` / `giveUpAfterIterations` as soft stop conditions.
  */
-import { OpenAI } from 'openai';
 import {
   navigateToJSONPath,
   placemarkedJSONStringify,
 } from './placemarkedJSON.js';
-import { GptConversation } from '@mightydatainc/gpt-conversation';
+import { LLMConversation } from '@mightydatainc/llm-conversation';
 
 const JSON_SCHEMA_ANYOF_PRIMITIVE_OR_EMPTY = [
   {
@@ -219,17 +218,17 @@ export class JSONSurgeryError extends Error {
 }
 
 /**
- * Modifies a JSON object based on modification instructions using OpenAI's API.
+ * Modifies a JSON object based on modification instructions using LLM services.
  * Does NOT modify the original object in place; instead, works with a copy and returns
  * the modified copy.
- * @param openaiClient The OpenAI client to use for modifications
+ * @param aiClient The AI client to use for modifications (e.g. OpenAI or Anthropic API client).
  * @param obj The JSON object to modify
  * @param modificationInstructions Instructions describing the modifications to apply
  * @param options Optional configuration object. See {@link JSONSurgeryOptions}.
  * @returns A copy of the original object, modified according to the instructions.
  */
 export const jsonSurgery = async (
-  openaiClient: OpenAI,
+  aiClient: any,
   obj: any,
   modificationInstructions: string,
   options?: JSONSurgeryOptions
@@ -245,7 +244,7 @@ export const jsonSurgery = async (
 
   const timeStarted = Date.now();
 
-  const convoBase = new GptConversation(openaiClient);
+  const convoBase = new LLMConversation(aiClient);
   convoBase.addDeveloperMessage(`
 You are an expert software developer AI assistant.
 The user will show you a JSON object and provide modification instructions.

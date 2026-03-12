@@ -1,12 +1,11 @@
-"""Iterative JSON modification workflow powered by OpenAI Responses API."""
+"""Iterative JSON modification workflow powered by LLM services."""
 
 import json
 import time
 
 from typing import Any, Callable, NotRequired, TypedDict
 
-from mightydatainc_gpt_conversation import OpenAIClientLike
-from mightydatainc_gpt_conversation import GptConversation
+from mightydatainc_llm_conversation import LLMConversation
 
 from .placemarked_json import navigate_to_json_path, placemarked_json_stringify
 
@@ -170,7 +169,7 @@ def _unpack_value_from_set_value_schema(value: dict[str, Any]) -> Any:
 
 
 def json_surgery(
-    openai_client: OpenAIClientLike,
+    ai_client: Any,
     obj: Any,
     modification_instructions: str,
     options: JSONSurgeryOptions | None = None,
@@ -187,7 +186,7 @@ def json_surgery(
 
     time_started = time.time()
 
-    convo_base = GptConversation(openai_client=openai_client)
+    convo_base = LLMConversation(ai_client)
     convo_base.add_developer_message(
         """
 You are an expert software developer AI assistant.

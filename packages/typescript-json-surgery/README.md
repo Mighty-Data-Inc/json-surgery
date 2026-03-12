@@ -1,6 +1,6 @@
 # @mightydatainc/json-surgery
 
-Iterative, AI-guided JSON modification powered by OpenAI. Pass in any JSON-compatible object and natural-language instructions. `jsonSurgery` breaks the task into discrete atomic operations (assign, delete, append, insert, rename, etc.) that are verified and applied methodically until the object satisfies your instructions.
+Iterative, AI-guided JSON modification powered by LLM services. Pass in any JSON-compatible object and natural-language instructions. `jsonSurgery` breaks the task into discrete atomic operations (assign, delete, append, insert, rename, etc.) that are verified and applied methodically until the object satisfies your instructions.
 
 ## Installation
 
