@@ -4,12 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mightydatainc-json-surgery"
-version = "1.2.0"
+version = "1.2.1"
 description = "An easy-to-call function that invokes iterative, AI-guided edits to a JSON-compatible object"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-  "mightydatainc-llm-conversation>=2.0.5"
+  "mightydatainc-llm-conversation>=1.0.5"
 ]
 authors = [{ name = "Mikhail Voloshin" }]
 license = { file = "LICENSE" }

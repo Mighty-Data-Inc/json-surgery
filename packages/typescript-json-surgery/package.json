@@ -1,6 +1,6 @@
 {
   "name": "@mightydatainc/json-surgery",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "An easy-to-call function that invokes iterative, AI-guided edits to a JSON-compatible object",
   "author": "Mikhail Voloshin",
   "license": "MIT",

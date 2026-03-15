@@ -2,6 +2,10 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.2.1] - 2026-03-15
+
+- Fixed Python packaging metadata: the dependency on `mightydatainc-llm-conversation` (`LLMConversation`) was set incorrectly in the previous release.
+
 ## [1.2.0] - 2026-03-12
 
 - Migrated dependency from GPT conversation to LLM conversation.

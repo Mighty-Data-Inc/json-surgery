@@ -2,6 +2,10 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.2.1] - 2026-03-15
+
+- No runtime changes in TypeScript. Version bump to maintain parity with the Python package, which fixes an incorrectly set `LLMConversation` dependency.
+
 ## [1.2.0] - 2026-03-12
 
 - Migrated dependency from GPT conversation to LLM conversation.
